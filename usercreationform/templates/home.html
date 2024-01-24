@@ -11,6 +11,10 @@
 <h1>Welcome {{ user }}</h1>
 <a href="{% url 'logout' %}">Logout</a>
 
+{% else %}
+<h1>Welcome</h1>
+<a href="/">Register</a>
+<a href="login">Login</a>
 {% endif %}
 </body>
 </html>

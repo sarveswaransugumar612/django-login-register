@@ -14,10 +14,15 @@ def signup_view(request):
         uemail = request.POST.get('email')
         upass = request.POST.get('password')
 
-        my_user = User.objects.create_user(uname,uemail,upass)
-        my_user.save()
-        messages.success(request,"User Created Successfully")
-        return redirect('/')
+        if User.objects.filter(username=uname).exists():
+            messages.info(request,"User is Already Registered")
+
+        else:
+            my_user = User.objects.create_user(uname,uemail,upass)
+            my_user.save()
+            messages.success(request,"User Created Successfully")
+            return redirect('/')
+
     return render(request,'signup.html')
 
 def login_view(request):
@@ -26,19 +31,22 @@ def login_view(request):
         username = request.POST.get('uname')
         password = request.POST.get('pass')
 
-        user = authenticate(request,username=username,password=password)
+        if User.objects.filter(username=username).exists():
+            user = authenticate(request,username=username,password=password)
 
-        if user is not None:
-            login(request, user)
-            return redirect('home')
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            else:
+                messages.error(request,"Invalid Credential!!")
 
         else:
-            messages.error(request,"invalid Credential!")
+            messages.error(request,"User is not Registered")
 
     return render(request,'login.html')
 
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('home')
 
 
